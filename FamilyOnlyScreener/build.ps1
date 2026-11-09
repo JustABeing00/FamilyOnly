@@ -44,13 +44,33 @@ if ($LASTEXITCODE -ne 0) { throw "aapt add failed" }
 if ($LASTEXITCODE -ne 0) { throw "zipalign failed" }
 
 Write-Output "6/6 sign..."
-if (!(Test-Path "$ROOT/debug.keystore")) {
-  & keytool -genkeypair -keystore "$ROOT/debug.keystore" -alias debug `
-    -keyalg RSA -keysize 2048 -validity 10950 `
-    -storepass android -keypass android -dname "CN=FamilyOnlyDebug"
+# Release keystore (preferred): configured via env vars, NEVER committed.
+#   FAMILYONLY_KEYSTORE = full path to release .keystore
+#   FAMILYONLY_KEY_ALIAS  = key alias (default: familyonly)
+#   FAMILYONLY_STOREPASS / FAMILYONLY_KEYPASS = passwords
+# Falls back to a local auto-generated debug key (dev installs only).
+$ReleaseKs = $env:FAMILYONLY_KEYSTORE
+$ReleaseAlias = $env:FAMILYONLY_KEY_ALIAS
+if ([string]::IsNullOrWhiteSpace($ReleaseAlias)) { $ReleaseAlias = "familyonly" }
+if (-not [string]::IsNullOrWhiteSpace($ReleaseKs) -and (Test-Path $ReleaseKs)) {
+  $StorePass = $env:FAMILYONLY_STOREPASS
+  $KeyPass = $env:FAMILYONLY_KEYPASS
+  if ([string]::IsNullOrEmpty($StorePass) -or [string]::IsNullOrEmpty($KeyPass)) {
+    throw "Release keystore set but passwords missing (FAMILYONLY_STOREPASS/FAMILYONLY_KEYPASS)"
+  }
+  Write-Output "signing with RELEASE key '$ReleaseAlias'..."
+  & "$BT/apksigner.bat" sign --ks $ReleaseKs --ks-key-alias $ReleaseAlias `
+    --ks-pass "pass:$StorePass" --key-pass "pass:$KeyPass" --out build/familyonly.apk build/aligned.apk
+} else {
+  Write-Output "no release keystore configured, signing with local DEBUG key..."
+  if (!(Test-Path "$ROOT/debug.keystore")) {
+    & keytool -genkeypair -keystore "$ROOT/debug.keystore" -alias debug `
+      -keyalg RSA -keysize 2048 -validity 10950 `
+      -storepass android -keypass android -dname "CN=FamilyOnlyDebug"
+  }
+  & "$BT/apksigner.bat" sign --ks "$ROOT/debug.keystore" `
+    --ks-pass pass:android --key-pass pass:android --out build/familyonly.apk build/aligned.apk
 }
-& "$BT/apksigner.bat" sign --ks "$ROOT/debug.keystore" `
-  --ks-pass pass:android --key-pass pass:android --out build/familyonly.apk build/aligned.apk
 if ($LASTEXITCODE -ne 0) { throw "apksigner failed" }
 
 Write-Output "BUILT: $ROOT/build/familyonly.apk"

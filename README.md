@@ -6,7 +6,9 @@ FamilyOnly is a minimal, offline Android call screener. You add the numbers you 
 
 ## Download
 
-Get the latest APK from [**Releases**](https://github.com/JustABeing00/FamilyOnly/releases) → download `FamilyOnly-v1.0.apk`, open it on your phone, allow **Install unknown apps**, then tap Install.
+Get the latest APK from [**Releases**](https://github.com/JustABeing00/FamilyOnly/releases) → download `FamilyOnly-v1.1.apk`, open it on your phone, allow **Install unknown apps**, then tap Install.
+
+> Coming from v1.0? Uninstall v1.0 first, then install v1.1 (the signing key changed once — this is the last time you'll ever need to reinstall for an update).
 
 ## How it works
 
