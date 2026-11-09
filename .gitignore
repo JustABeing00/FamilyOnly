@@ -1,0 +1,25 @@
+# Build output – regenerate locally with FamilyOnlyScreener/build.ps1
+FamilyOnlyScreener/build/
+*.apk
+*.ap_
+*.idsig
+*.dex
+*.class
+
+# Signing keys – NEVER commit.
+# build.ps1 auto-generates a local debug key if missing,
+# so every clone gets its own. Committing yours lets
+# anyone sign updates that look like they came from you.
+*.keystore
+*.jks
+*.key
+*.p12
+*.pfx
+
+# Local / OS / editor noise
+local.properties
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
