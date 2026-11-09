@@ -4,6 +4,10 @@ Only your trusted numbers ring. Everything else is rejected silently.
 
 FamilyOnly is a minimal, offline Android call screener. You add the numbers you trust (family, close friends, work), and FamilyOnly blocks all other incoming calls automatically — no ads, no network, no cloud.
 
+## Download
+
+Get the latest APK from [**Releases**](https://github.com/JustABeing00/FamilyOnly/releases) → download `FamilyOnly-v1.0.apk`, open it on your phone, allow **Install unknown apps**, then tap Install.
+
 ## How it works
 
 - Uses Android's `CallScreeningService` (`ROLE_CALL_SCREENING`).
